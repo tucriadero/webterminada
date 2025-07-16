@@ -1,0 +1,46 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id         String   @id @default(uuid())
+  email      String   @unique
+  password   String
+  name       String
+  isVerified Boolean  @default(false)
+  createdAt  DateTime @default(now())
+}
+
+model Criadero {
+  id             String   @id @default(uuid())
+  nombre         String
+  email          String   @unique
+  password       String
+  nucleoZoologico String
+  isVerified     Boolean  @default(false)
+  isDestacado    Boolean  @default(false)
+  createdAt      DateTime @default(now())
+}
+
+model Animal {
+  id              String   @id @default(uuid())
+  criaderoId      String
+  nombre          String
+  raza            String
+  especie         String
+  descripcion     String
+  edad            String
+  fotos           String[]
+  ubicacion       String
+  vacunado        Boolean
+  desparasitado   Boolean
+  microchip       Boolean
+  saludComprobada Boolean
+  pedigree        Boolean
+  createdAt       DateTime @default(now())
+}
