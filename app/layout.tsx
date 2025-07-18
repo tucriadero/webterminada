@@ -1,12 +1,16 @@
 import '../styles/globals.css';
 import { Providers } from './providers';
 import type { Metadata } from 'next';
-import AuthRedirect from '@/components/AuthRedirect'; // <-- Importa aquí
+import AuthRedirect from '@/components/AuthRedirect';
+import CookieBanner from '@/components/CookieBanner'; // ✅ Importamos el banner
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.tucriadero.es'),
   title: 'TuCriadero',
   description: 'Encuentra perros y gatos de criadores verificados.',
+  icons: {
+    icon: '/favicon.ico', // ✅ Favicon añadido
+  },
   openGraph: {
     title: 'TuCriadero.es – Criadores de perros y gatos',
     description: 'Encuentra criaderos verificados y responsables cerca de ti. Contacto directo, sin intermediarios.',
@@ -40,10 +44,12 @@ export default function RootLayout({
     <html lang="es">
       <body>
         <Providers>
-          <AuthRedirect /> {/* <-- Añadido aquí */}
+          <AuthRedirect />
           {children}
+          <CookieBanner /> {/* ✅ Banner de cookies */}
         </Providers>
       </body>
     </html>
   );
 }
+
