@@ -146,16 +146,21 @@ export default function PublicarAnuncioPage() {
   {provincias.map((prov) => <option key={prov} value={prov}>{prov}</option>)}
 </select>
 
-<input
-  type="number"
-  placeholder="Edad (en semanas)"
-  min={1}
-  max={52}
-  value={edad}
-  onChange={(e) => setEdad(e.target.value)}
-  className="w-full px-4 py-3 border rounded-lg"
-  required
-/>
+<div className="mb-4">
+  <label htmlFor="edad" className="block text-sm font-medium text-gray-700 mb-1">
+    Edad (opcional)
+  </label>
+  <input
+    type="text"
+    id="edad"
+    name="edad"
+    placeholder="Ej: 8 semanas, 2 meses, recién nacidos..."
+    value={edad}
+    onChange={(e) => setEdad(e.target.value)}
+    className="w-full px-4 py-3 border rounded-lg text-gray-700"
+  />
+</div>
+
 
 <select
   value={cachorros}
@@ -169,14 +174,21 @@ export default function PublicarAnuncioPage() {
   ))}
 </select>
 
-<input
-  type="date"
-  placeholder="Fecha de entrega"
-  value={entrega}
-  onChange={(e) => setEntrega(e.target.value)}
-  className="w-full px-4 py-3 border rounded-lg"
-  required
-/>
+<div className="mb-4">
+  <label htmlFor="fechaEntrega" className="block text-sm font-medium text-gray-700 mb-1">
+    Fecha de entrega
+  </label>
+  <input
+    type="date"
+    id="fechaEntrega"
+    name="fechaEntrega"
+    value={entrega}
+    onChange={(e) => setEntrega(e.target.value)}
+    className="w-full px-4 py-3 border rounded-lg text-gray-700"
+    required
+  />
+</div>
+
 
 <input
   type="number"
