@@ -49,44 +49,60 @@ export default function MiPerfil() {
     fetchPerfil();
   }, [user]);
 
- const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-  const file = e.target.files?.[0];
-  if (!file || !user) return;
+  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user) return;
 
-  setSubiendoAvatar(true);
+    setSubiendoAvatar(true);
 
-  const fileExt = file.name.split('.').pop();
-  const fileName = `${user.id}.${fileExt}`;
-  const filePath = fileName;
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${user.id}-${Date.now()}.${fileExt}`; // Nombre único
+    console.log('Subiendo archivo:', fileName);
 
-  const { error: uploadError } = await supabase.storage
-    .from('avatars')
-    .upload(filePath, file, { upsert: true });
+    const { error: uploadError } = await supabase.storage
+      .from('avatars')
+      .upload(fileName, file, { upsert: true });
 
-  if (uploadError) {
-    toast.error('Error al subir el avatar');
+    if (uploadError) {
+      console.log('Error al subir:', uploadError);
+      toast.error('Error al subir el avatar');
+      setSubiendoAvatar(false);
+      return;
+    }
+
+    const { data } = supabase.storage.from('avatars').getPublicUrl(fileName);
+    const publicUrlConTimestamp = `${data.publicUrl}?t=${Date.now()}`;
+
+    console.log('URL pública:', publicUrlConTimestamp);
+
+    const { error: updateError } = await supabase
+      .from('profiles')
+      .update({ avatar_url: publicUrlConTimestamp })
+      .eq('id', user.id);
+
+    if (updateError) {
+      console.log('Error al actualizar perfil:', updateError);
+      toast.error('Error al actualizar el perfil');
+    } else {
+      toast.success('Avatar actualizado');
+      setPerfil(prev => prev ? { ...prev, avatar_url: publicUrlConTimestamp } : prev);
+    }
+
     setSubiendoAvatar(false);
-    return;
-  }
+  };
 
-  const { data } = supabase.storage.from('avatars').getPublicUrl(filePath);
-  const publicUrlConTimestamp = `${data.publicUrl}?t=${Date.now()}`;
-
-  const { error: updateError } = await supabase
-    .from('profiles')
-    .update({ avatar_url: publicUrlConTimestamp })
-    .eq('id', user.id);
-
-  if (updateError) {
-    toast.error('Error al actualizar el perfil');
-  } else {
-    toast.success('Avatar actualizado');
-    setPerfil(prev => prev ? { ...prev, avatar_url: publicUrlConTimestamp } : prev);
-  }
-
-  setSubiendoAvatar(false);
-};
-
+  // Botón para recargar perfil manualmente y forzar refresco
+  const recargarPerfil = async () => {
+    if (!user) return;
+    setLoading(true);
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', user.id)
+      .single();
+    if (!error && data) setPerfil(data as Perfil);
+    setLoading(false);
+  };
 
   useEffect(() => {
     if (user === null) router.push('/login');
@@ -117,17 +133,16 @@ export default function MiPerfil() {
                 </svg>
               </div>
             ) : (
-             <Image
-  key={perfil?.avatar_url}
-  src={perfil?.avatar_url || '/default-avatar.png'}
-  alt="Avatar"
-  width={100}
-  height={100}
-  unoptimized
-  priority
-  className="rounded-full object-cover border hover:opacity-80 transition"
-/>
-
+              <Image
+                key={perfil?.avatar_url}
+                src={perfil?.avatar_url || '/default-avatar.png'}
+                alt="Avatar"
+                width={100}
+                height={100}
+                unoptimized
+                priority
+                className="rounded-full object-cover border hover:opacity-80 transition"
+              />
             )}
 
             <input
@@ -145,6 +160,13 @@ export default function MiPerfil() {
             )}
           </label>
         </div>
+
+        <button
+          onClick={recargarPerfil}
+          className="mt-2 px-3 py-1 bg-[#5cae97] text-white rounded"
+        >
+          Recargar perfil
+        </button>
 
         <h2 className="text-2xl font-bold text-[#5cae97]">@{perfil.username}</h2>
         <p className="text-gray-700">{perfil.nombre}</p>
