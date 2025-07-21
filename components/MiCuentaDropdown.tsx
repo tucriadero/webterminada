@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useUser } from '@supabase/auth-helpers-react';
-import { supabase } from '@/lib/supabaseClient';
+import { supabase } from '../lib/supabaseClient';
 
 import UserIcon from '@heroicons/react/24/outline/UserIcon';
 import ClipboardListIcon from '@heroicons/react/24/outline/ClipboardDocumentListIcon';
