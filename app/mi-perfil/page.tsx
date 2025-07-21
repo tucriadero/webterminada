@@ -49,41 +49,44 @@ export default function MiPerfil() {
     fetchPerfil();
   }, [user]);
 
-  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file || !user) return;
+ const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const file = e.target.files?.[0];
+  if (!file || !user) return;
 
-    setSubiendoAvatar(true);
+  setSubiendoAvatar(true);
 
-    const fileExt = file.name.split('.').pop();
-    const fileName = `${user.id}.${fileExt}`;
-    const { error: uploadError } = await supabase.storage
-      .from('avatars')
-      .upload(fileName, file, { upsert: true });
+  const fileExt = file.name.split('.').pop();
+  const fileName = `${user.id}.${fileExt}`;
+  const filePath = fileName;
 
-    if (uploadError) {
-      toast.error('Error al subir avatar');
-      setSubiendoAvatar(false);
-      return;
-    }
+  const { error: uploadError } = await supabase.storage
+    .from('avatars')
+    .upload(filePath, file, { upsert: true });
 
-    const { data: urlData } = supabase.storage.from('avatars').getPublicUrl(fileName);
-    const newUrl = urlData?.publicUrl ? `${urlData.publicUrl}?t=${Date.now()}` : '';
-
-    const { error: updateError } = await supabase
-      .from('profiles')
-      .update({ avatar_url: newUrl })
-      .eq('id', user.id);
-
-    if (updateError) {
-      toast.error('Error al actualizar avatar');
-    } else {
-      toast.success('Avatar actualizado');
-      setPerfil((prev) => prev ? { ...prev, avatar_url: newUrl } : prev);
-    }
-
+  if (uploadError) {
+    toast.error('Error al subir el avatar');
     setSubiendoAvatar(false);
-  };
+    return;
+  }
+
+  const { data } = supabase.storage.from('avatars').getPublicUrl(filePath);
+  const publicUrlConTimestamp = `${data.publicUrl}?t=${Date.now()}`;
+
+  const { error: updateError } = await supabase
+    .from('profiles')
+    .update({ avatar_url: publicUrlConTimestamp })
+    .eq('id', user.id);
+
+  if (updateError) {
+    toast.error('Error al actualizar el perfil');
+  } else {
+    toast.success('Avatar actualizado');
+    setPerfil(prev => prev ? { ...prev, avatar_url: publicUrlConTimestamp } : prev);
+  }
+
+  setSubiendoAvatar(false);
+};
+
 
   useEffect(() => {
     if (user === null) router.push('/login');
@@ -114,14 +117,16 @@ export default function MiPerfil() {
                 </svg>
               </div>
             ) : (
-              <Image
-                src={perfil.avatar_url || '/default-avatar.png'}
-                alt="Avatar"
-                width={100}
-                height={100}
-                unoptimized
-                className="rounded-full object-cover border hover:opacity-80 transition"
-              />
+             <Image
+  key={perfil?.avatar_url}
+  src={perfil?.avatar_url || '/default-avatar.png'}
+  alt="Avatar"
+  width={100}
+  height={100}
+  unoptimized
+  className="rounded-full object-cover border hover:opacity-80 transition"
+/>
+
             )}
 
             <input
