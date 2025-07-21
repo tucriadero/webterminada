@@ -3,8 +3,18 @@
 import { useEffect, useState } from 'react';
 import { createClient } from '@/utils/supabase/client';
 
+type Mensaje = {
+  id: string;
+  emisor_id: string;
+  receptor_id: string;
+  contenido: string | null;
+  imagen_url: string | null;
+  leido: boolean;
+  creado_en: string;
+};
+
 export default function ChatPage() {
-  const [mensajes, setMensajes] = useState<any[]>([]);
+  const [mensajes, setMensajes] = useState<Mensaje[]>([]);
   const [usuarioId, setUsuarioId] = useState<string | null>(null);
 
   const supabase = createClient();
@@ -43,7 +53,9 @@ export default function ChatPage() {
             }`}
           >
             <p>{m.contenido}</p>
-            <span className="text-xs text-gray-500 block">{new Date(m.creado_en).toLocaleString()}</span>
+            <span className="text-xs text-gray-500 block">
+              {new Date(m.creado_en).toLocaleString()}
+            </span>
           </div>
         ))}
       </div>
