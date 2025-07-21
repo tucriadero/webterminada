@@ -1,49 +1,46 @@
 'use client';
 
+import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
-import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { useUser } from '@supabase/auth-helpers-react';
 
 export default function Avatar() {
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
-  const router = useRouter();
+  const user = useUser();
+  const [avatarUrl, setAvatarUrl] = useState('');
 
   useEffect(() => {
-    const fetchAvatar = async () => {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-
-      if (!session?.user) return;
-
-      const { data, error } = await supabase
+    if (user) {
+      supabase
         .from('profiles')
         .select('avatar_url')
-        .eq('id', session.user.id)
-        .single();
+        .eq('id', user.id)
+        .single()
+        .then(({ data, error }) => {
+          if (error) {
+            console.error('Error cargando avatar:', error.message);
+          } else {
+            setAvatarUrl(data?.avatar_url || '');
+          }
+        });
+    }
+  }, [user]);
 
-      if (!error && data?.avatar_url) {
-        setAvatarUrl(data.avatar_url);
-      }
-    };
+  if (!user) {
+    return null;
+  }
 
-    fetchAvatar();
-  }, []);
-
-  return (
-    <div
-      className="w-10 h-10 rounded-full overflow-hidden cursor-pointer border-2 border-[#5cae97]"
-      onClick={() => router.push('/mi-perfil')}
-    >
-      <Image
-        src={avatarUrl || '/avatar-placeholder.png'}
-        alt="Avatar"
-        width={40}
-        height={40}
-        className="object-cover w-full h-full"
-      />
+  return avatarUrl ? (
+    <Image
+      src={avatarUrl}
+      alt="Avatar usuario"
+      width={32}
+      height={32}
+      className="rounded-full object-cover w-8 h-8"
+    />
+  ) : (
+    <div className="w-8 h-8 rounded-full bg-[#5cae97] flex items-center justify-center text-white text-sm">
+      👤
     </div>
   );
 }
-

@@ -1,15 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { supabase } from '@/lib/supabase';
+import Image from 'next/image';
 import Link from 'next/link';
-import { FaArrowLeft, FaCheckCircle } from 'react-icons/fa';
-
-const criadores = [
-  { id: 1, nombre: 'Gatitos Premium', provincia: 'Barcelona', raza: 'Ragdoll', tipo: 'gato', verificado: true },
-  { id: 2, nombre: 'Felines de Ensueño', provincia: 'Sevilla', raza: 'Persa', tipo: 'gato', verificado: true },
-  { id: 3, nombre: 'Mininos Royal', provincia: 'Madrid', raza: 'Siamés', tipo: 'gato', verificado: false },
-  { id: 4, nombre: 'Peluditos Top', provincia: 'Valencia', raza: 'British Shorthair', tipo: 'gato', verificado: true },
-];
 
 const razasGato = [
   "Ragdoll", "Sphynx", "Persa", "Maine Coon", "British Shorthair", "Siamés", "Bengalí", "Azul Ruso", "Abisinio",
@@ -26,58 +20,88 @@ const provincias = [
   "Zaragoza", "Ceuta", "Melilla"
 ];
 
-export default function Gatos() {
-  const [raza, setRaza] = useState('');
-  const [provincia, setProvincia] = useState('');
+export default function PaginaGatos() {
+  const [anuncios, setAnuncios] = useState<any[]>([]);
+  const [razaFiltro, setRazaFiltro] = useState('');
+  const [provinciaFiltro, setProvinciaFiltro] = useState('');
 
-  const filtrados = criadores.filter(c =>
-    c.tipo === 'gato' &&
-    (!raza || c.raza === raza) &&
-    (!provincia || c.provincia === provincia)
-  );
+  useEffect(() => {
+    const fetchAnuncios = async () => {
+      const { data, error } = await supabase
+        .from('anuncios')
+        .select('*, profiles(username, nombre, is_criadero, afijo, nucleo_zoologico, avatar_url)')
+        .eq('tipo', 'gato')
+        .eq('estado', 'Publicado')
+        .order('created_at', { ascending: false });
+
+      if (!error) {
+        setAnuncios(data);
+      }
+    };
+    fetchAnuncios();
+  }, []);
+
+  const anunciosFiltrados = anuncios.filter((anuncio) => {
+    return (
+      (!razaFiltro || anuncio.raza === razaFiltro) &&
+      (!provinciaFiltro || anuncio.provincia === provinciaFiltro)
+    );
+  });
 
   return (
-    <main className="bg-[#E8F8F2] min-h-screen py-10 px-4">
-      <Link href="/inicio" className="text-[#5cae97] hover:text-green-900 flex items-center gap-2 mb-6">
-        <FaArrowLeft />
-        <span>Volver a inicio</span>
-      </Link>
-
-      <h1 className="text-3xl font-bold text-[#5cae97] text-center mb-6">Anuncios de Gatos</h1>
-
-      <div className="flex flex-wrap gap-4 justify-center mb-10">
-        <div>
-          <label className="block text-sm mb-1">Filtrar por raza</label>
-          <select value={raza} onChange={e => setRaza(e.target.value)} className="border rounded-lg px-4 py-2">
-            <option value="">Todas las razas</option>
-            {razasGato.map(r => <option key={r}>{r}</option>)}
-          </select>
-        </div>
-
-        <div>
-          <label className="block text-sm mb-1">Filtrar por provincia</label>
-          <select value={provincia} onChange={e => setProvincia(e.target.value)} className="border rounded-lg px-4 py-2">
-            <option value="">Todas las provincias</option>
-            {provincias.map(p => <option key={p}>{p}</option>)}
-          </select>
-        </div>
+    <main className="min-h-screen bg-[#DFF6EA] px-4 py-8">
+      <div className="flex justify-center mb-6">
+        <img src="/logo-criador.png" alt="TuCriadero" className="h-16" />
       </div>
 
-      {filtrados.length === 0 ? (
-        <p className="text-center text-gray-600">No hay anuncios disponibles con estos filtros.</p>
-      ) : (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-6xl mx-auto">
-          {filtrados.map(c => (
-            <div key={c.id} className="bg-white p-4 rounded-xl shadow text-center hover:shadow-md transition">
-              <div className="w-full aspect-square bg-gray-100 rounded mb-2" />
-              <h3 className="text-[#5cae97] font-semibold text-sm flex items-center justify-center gap-1">
-                {c.nombre} {c.verificado && <FaCheckCircle className="text-green-500" title="Criador verificado" />}
-              </h3>
-              <p className="text-sm text-gray-600">{c.raza} - {c.provincia}</p>
+      <h1 className="text-2xl font-bold text-[#5cae97] text-center mb-6">Anuncios de Gatos</h1>
+
+      <div className="flex flex-wrap justify-center gap-4 mb-8">
+        <select value={razaFiltro} onChange={(e) => setRazaFiltro(e.target.value)} className="px-4 py-3 rounded-xl border w-72 shadow-sm">
+          <option value="">🐾 Filtrar por raza</option>
+          {razasGato.map((r) => <option key={r}>{r}</option>)}
+        </select>
+        <select value={provinciaFiltro} onChange={(e) => setProvinciaFiltro(e.target.value)} className="px-4 py-3 rounded-xl border w-72 shadow-sm">
+          <option value="">📍 Filtrar por provincia</option>
+          {provincias.map((p) => <option key={p}>{p}</option>)}
+        </select>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        {anunciosFiltrados.map((anuncio) => (
+          <div key={anuncio.id} className="bg-white rounded-xl shadow-md overflow-hidden">
+            {anuncio.imagenes?.[0] && (
+              <Image
+                src={anuncio.imagenes[0]}
+                alt={anuncio.titulo}
+                width={400}
+                height={300}
+                className="w-full h-48 object-cover"
+              />
+            )}
+            <div className="p-4">
+              <h2 className="text-lg font-semibold text-[#5cae97]">{anuncio.titulo}</h2>
+              <p className="text-sm text-gray-600">{anuncio.raza} · {anuncio.provincia}</p>
+              <p className="text-sm mt-2">
+                Criador: <strong>{anuncio.profiles?.username}</strong>
+                {anuncio.profiles?.is_criadero && <span className="ml-1 text-blue-500">✔️</span>}
+              </p>
+              <Link
+                href={`/anuncio/${anuncio.id}`}
+                className="inline-block mt-3 text-sm bg-[#5cae97] hover:bg-[#4c9c85] text-white px-4 py-2 rounded-full"
+              >
+                Ver más
+              </Link>
             </div>
-          ))}
-        </div>
-      )}
+          </div>
+        ))}
+      </div>
+
+      <div className="flex justify-center mt-10">
+        <Link href="/inicio" className="inline-block bg-[#e8f8f2] hover:bg-[#d2eee2] text-[#5cae97] font-medium px-6 py-2 rounded-full shadow-sm">
+          ← Volver al inicio
+        </Link>
+      </div>
     </main>
   );
 }
