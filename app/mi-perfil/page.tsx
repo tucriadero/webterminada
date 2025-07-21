@@ -67,20 +67,19 @@ export default function MiPerfil() {
       return;
     }
 
-    const { data: publicUrl } = supabase.storage
-      .from('avatars')
-      .getPublicUrl(fileName);
+    const { data: urlData } = supabase.storage.from('avatars').getPublicUrl(fileName);
+    const newUrl = urlData?.publicUrl ? `${urlData.publicUrl}?t=${Date.now()}` : '';
 
     const { error: updateError } = await supabase
       .from('profiles')
-      .update({ avatar_url: publicUrl.publicUrl })
+      .update({ avatar_url: newUrl })
       .eq('id', user.id);
 
     if (updateError) {
       toast.error('Error al actualizar avatar');
     } else {
       toast.success('Avatar actualizado');
-      setPerfil((prev) => prev ? { ...prev, avatar_url: publicUrl.publicUrl } : prev);
+      setPerfil((prev) => prev ? { ...prev, avatar_url: newUrl } : prev);
     }
 
     setSubiendoAvatar(false);
@@ -91,9 +90,7 @@ export default function MiPerfil() {
   }, [user]);
 
   if (!user) return null;
-
   if (loading) return <div className="p-10 text-center">Cargando perfil...</div>;
-
   if (!perfil) {
     return (
       <div className="p-10 text-center text-red-500 font-semibold">
@@ -111,33 +108,14 @@ export default function MiPerfil() {
           <label htmlFor="avatar-upload" className="cursor-pointer group relative">
             {subiendoAvatar ? (
               <div className="w-[100px] h-[100px] rounded-full bg-gray-100 flex items-center justify-center animate-pulse">
-                <svg
-                  className="w-6 h-6 text-[#5cae97] animate-spin"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  ></circle>
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8h4z"
-                  ></path>
+                <svg className="w-6 h-6 text-[#5cae97] animate-spin" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8h4z" />
                 </svg>
               </div>
             ) : (
               <Image
-                src={
-                  typeof perfil?.avatar_url === 'string' && perfil.avatar_url !== ''
-                    ? perfil.avatar_url
-                    : '/default-avatar.png'
-                }
+                src={perfil.avatar_url || '/default-avatar.png'}
                 alt="Avatar"
                 width={100}
                 height={100}
