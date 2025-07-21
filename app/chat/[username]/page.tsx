@@ -7,11 +7,17 @@ import { supabase } from '@/lib/supabase';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 
+type Perfil = {
+  id: string;
+  username: string;
+  avatar_url: string;
+};
+
 export default function ChatPage() {
   const user = useUser();
   const router = useRouter();
   const { username } = useParams();
-  const [perfilDestino, setPerfilDestino] = useState(null);
+  const [perfilDestino, setPerfilDestino] = useState<Perfil | null>(null);
   const [mensajes, setMensajes] = useState([]);
   const [nuevoMensaje, setNuevoMensaje] = useState('');
   const [imagenFile, setImagenFile] = useState<File | null>(null);
