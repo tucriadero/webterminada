@@ -8,10 +8,22 @@ import Image from 'next/image';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 
+type Perfil = {
+  id: string;
+  username: string;
+  nombre: string | null;
+  telefono?: string | null;
+  provincia?: string | null;
+  afijo?: string | null;
+  nucleo_zoologico?: string | null;
+  is_criadero?: boolean;
+  avatar_url?: string | null;
+};
+
 export default function MiPerfil() {
   const user = useUser();
   const router = useRouter();
-  const [perfil, setPerfil] = useState<any>(null);
+  const [perfil, setPerfil] = useState<Perfil | null>(null);
   const [loading, setLoading] = useState(true);
   const [subiendoAvatar, setSubiendoAvatar] = useState(false);
 
@@ -28,7 +40,7 @@ export default function MiPerfil() {
       if (error || !data) {
         setPerfil(null);
       } else {
-        setPerfil(data);
+        setPerfil(data as Perfil);
       }
 
       setLoading(false);
@@ -68,16 +80,17 @@ export default function MiPerfil() {
       toast.error('Error al actualizar avatar');
     } else {
       toast.success('Avatar actualizado');
-      setPerfil((prev: any) => ({ ...prev, avatar_url: publicUrl.publicUrl }));
+      setPerfil((prev) => prev ? { ...prev, avatar_url: publicUrl.publicUrl } : prev);
     }
 
     setSubiendoAvatar(false);
   };
 
-  if (!user) {
-    router.push('/login');
-    return null;
-  }
+  useEffect(() => {
+    if (user === null) router.push('/login');
+  }, [user]);
+
+  if (!user) return null;
 
   if (loading) return <div className="p-10 text-center">Cargando perfil...</div>;
 
@@ -118,18 +131,19 @@ export default function MiPerfil() {
                   ></path>
                 </svg>
               </div>
-            ) : perfil.avatar_url ? (
+            ) : (
               <Image
-                src={perfil.avatar_url}
+                src={
+                  typeof perfil?.avatar_url === 'string' && perfil.avatar_url !== ''
+                    ? perfil.avatar_url
+                    : '/default-avatar.png'
+                }
                 alt="Avatar"
                 width={100}
                 height={100}
+                unoptimized
                 className="rounded-full object-cover border hover:opacity-80 transition"
               />
-            ) : (
-              <div className="w-[100px] h-[100px] rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-sm hover:opacity-80 transition">
-                Sin foto
-              </div>
             )}
 
             <input
@@ -163,8 +177,12 @@ export default function MiPerfil() {
             <div className="inline-block bg-[#e1f7ef] text-[#3e947d] text-xs font-medium px-3 py-1 rounded-full">
               🏅 Criador verificado
             </div>
-            <p className="text-sm mt-2">🐾 Afijo: <strong>{perfil.afijo}</strong></p>
-            <p className="text-sm">📋 Núcleo zoológico: <strong>{perfil.nucleo_zoologico}</strong></p>
+            <p className="text-sm mt-2">
+              🐾 Afijo: <strong>{perfil.afijo}</strong>
+            </p>
+            <p className="text-sm">
+              📋 Núcleo zoológico: <strong>{perfil.nucleo_zoologico}</strong>
+            </p>
           </>
         )}
 

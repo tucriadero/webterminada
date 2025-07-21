@@ -6,8 +6,16 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 
+type Perfil = {
+  id: string;
+  username: string;
+  nombre: string | null;
+  email?: string | null;
+  avatar_url?: string | null;
+};
+
 export default function MiCuentaPage() {
-  const [perfil, setPerfil] = useState(null);
+  const [perfil, setPerfil] = useState<Perfil | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
@@ -19,11 +27,13 @@ export default function MiCuentaPage() {
         return;
       }
 
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', session.user.id)
-        .single();
+     const { data, error } = await supabase
+  .from('profiles')
+  .select('*')
+  .eq('id', session.user.id)
+  .single();
+
+const perfil: Perfil | null = data;
 
       if (!error) setPerfil(data);
       setLoading(false);
@@ -52,13 +62,20 @@ export default function MiCuentaPage() {
     <main className="min-h-screen bg-[#DFF6EA] px-4 py-10">
       <div className="max-w-xl mx-auto bg-white p-6 rounded-xl shadow-lg text-center space-y-4">
         <Image
-          src={perfil.avatar_url || '/default-avatar.png'}
+          src={
+            typeof perfil.avatar_url === 'string' && perfil.avatar_url !== ''
+              ? perfil.avatar_url
+              : '/default-avatar.png'
+          }
           alt="Avatar"
           width={100}
           height={100}
           className="rounded-full mx-auto object-cover"
+          unoptimized
         />
-        <h1 className="text-2xl font-bold text-[#5cae97]">{perfil.nombre || perfil.username}</h1>
+        <h1 className="text-2xl font-bold text-[#5cae97]">
+          {perfil.nombre || perfil.username}
+        </h1>
         <p>{perfil.email}</p>
 
         <div className="flex justify-center gap-4 mt-4 flex-wrap">
