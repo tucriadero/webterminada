@@ -124,6 +124,7 @@ export default function MiPerfil() {
   width={100}
   height={100}
   unoptimized
+  priority
   className="rounded-full object-cover border hover:opacity-80 transition"
 />
 
