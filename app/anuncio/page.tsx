@@ -42,21 +42,6 @@ export default function PublicarAnuncioPage() {
 
   const razasDisponibles = tipo === 'perro' ? razasPerros : tipo === 'gato' ? razasGatos : [];
 
-<<<<<<< HEAD
-  useEffect(() => {
-    if (!user) return;
-    const fetchPerfil = async () => {
-      const { data, error } = await supabase.from('profiles').select('*').eq('id', user.id).single();
-      if (error || !data) {
-        setPerfil(null);
-      } else {
-        setPerfil(data);
-      }
-      setLoading(false);
-    };
-    fetchPerfil();
-  }, [user]);
-=======
 useEffect(() => {
   if (!user) return;
 
@@ -67,18 +52,18 @@ useEffect(() => {
       .eq('id', user.id)
       .single();
 
-    if (error) {
+    if (error || !data) {
       console.error('Error al obtener el perfil:', error);
+      setPerfil(null);
+    } else {
+      setPerfil(data);
     }
-
-    setPerfil(data);
     setLoading(false);
   };
 
   fetchPerfil();
 }, [user]);
 
->>>>>>> 31097c8 (Añadido indicador 'está escribiendo' en chat)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
