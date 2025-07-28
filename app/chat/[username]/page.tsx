@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from 'react';
 import { useUser } from '@supabase/auth-helpers-react';
 import { supabase } from '@/lib/supabase';
 import { useParams } from 'next/navigation';
-import Image from 'next/image';
 
 interface Mensaje {
   id: string;
@@ -26,7 +25,7 @@ export default function ChatPage() {
   const [nuevoMensaje, setNuevoMensaje] = useState('');
   const [imagen, setImagen] = useState<File | null>(null);
   const [showPickerId, setShowPickerId] = useState<string | null>(null);
-  const [escribiendoOtro, setEscribiendoOtro] = useState(false); // <-- Estado para indicador
+  const [escribiendoOtro, setEscribiendoOtro] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const typingTimeout = useRef<NodeJS.Timeout | null>(null);
   const destinatarioIdRef = useRef<string | null>(null);
@@ -42,7 +41,7 @@ export default function ChatPage() {
         .single();
 
       if (!usuarioDestino) return;
-      destinatarioIdRef.current = usuarioDestino.id; // <-- Guardamos ID destinatario
+      destinatarioIdRef.current = usuarioDestino.id;
 
       const { data } = await supabase
         .from('messages')
@@ -72,7 +71,6 @@ export default function ChatPage() {
       })
       .subscribe();
 
-    // Canal para escuchar typing status
     const typingChannel = supabase
       .channel(`typing-${username}`)
       .on('postgres_changes', {
@@ -81,7 +79,6 @@ export default function ChatPage() {
         table: 'typing_status',
         filter: `user_id=eq.${destinatarioIdRef.current}`,
       }, (payload) => {
-        // Solo actualizamos si el typing es del interlocutor y el target soy yo
         if (payload.new.target_id === user.id) {
           setEscribiendoOtro(payload.new.typing);
         }
@@ -98,7 +95,6 @@ export default function ChatPage() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [mensajes]);
 
-  // Nuevo onChange para input que envía el estado escribiendo
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNuevoMensaje(e.target.value);
 
@@ -124,7 +120,6 @@ export default function ChatPage() {
 
   const enviarMensaje = async () => {
     if (!nuevoMensaje.trim() && !imagen) return;
-
     if (!user || !destinatarioIdRef.current) return;
 
     let image_url = null;
@@ -148,7 +143,6 @@ export default function ChatPage() {
     setNuevoMensaje('');
     setImagen(null);
 
-    // Enviar typing = false tras enviar mensaje
     supabase.from('typing_status').upsert({
       user_id: user.id,
       target_id: destinatarioIdRef.current,
@@ -176,7 +170,6 @@ export default function ChatPage() {
     <div className="min-h-screen bg-[#DFF6EA] p-4 max-w-2xl mx-auto flex flex-col">
       <h1 className="text-xl font-bold text-[#5cae97] mb-1">Conversación con @{username}</h1>
 
-      {/* Indicador escribiendo */}
       {escribiendoOtro && (
         <p className="text-sm text-gray-500 mb-2 italic">Está escribiendo…</p>
       )}
@@ -211,7 +204,7 @@ export default function ChatPage() {
             </p>
 
             {/* Reacciones existentes */}
-            {m.reacciones?.length > 0 && (
+            {Array.isArray(m.reacciones) && m.reacciones.length > 0 && (
               <div className="mt-1 flex gap-1">
                 {m.reacciones.map((r, i) => (
                   <span key={i} className="text-sm">{r.emoji}</span>
@@ -247,7 +240,7 @@ export default function ChatPage() {
         />
         <input
           value={nuevoMensaje}
-          onChange={handleInputChange}  // <-- aquí usamos la función con typing status
+          onChange={handleInputChange}
           placeholder="Escribe un mensaje"
           className="flex-1 border rounded-full px-4 py-2 text-sm"
         />
