@@ -2,24 +2,16 @@ import '../styles/globals.css';
 import { Providers } from './providers';
 import type { Metadata } from 'next';
 import AuthRedirect from '@/components/AuthRedirect';
-<<<<<<< HEAD
-import CookieBanner from '@/components/CookieBanner'; // ✅ Importamos el banner
-=======
 import CookieBanner from '@/components/CookieBanner';
 import NotificationListener from '@/components/NotificationListener';
-import NotificationSound from '@/components/NotificationSound'; // ✅ Importación añadida
->>>>>>> 31097c8 (Añadido indicador 'está escribiendo' en chat)
+import NotificationSound from '@/components/NotificationSound';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.tucriadero.es'),
   title: 'TuCriadero',
   description: 'Encuentra perros y gatos de criadores verificados.',
   icons: {
-<<<<<<< HEAD
-    icon: '/favicon.ico', // ✅ Favicon añadido
-=======
     icon: '/favicon.ico',
->>>>>>> 31097c8 (Añadido indicador 'está escribiendo' en chat)
   },
   openGraph: {
     title: 'TuCriadero.es – Criadores de perros y gatos',
@@ -55,15 +47,10 @@ export default function RootLayout({
       <body>
         <Providers>
           <AuthRedirect />
-<<<<<<< HEAD
-          {children}
-          <CookieBanner /> {/* ✅ Banner de cookies */}
-=======
           <NotificationListener />
-          <NotificationSound /> {/* ✅ Reproduce el sonido al recibir mensaje */}
+          <NotificationSound />
           {children}
           <CookieBanner />
->>>>>>> 31097c8 (Añadido indicador 'está escribiendo' en chat)
         </Providers>
       </body>
     </html>
