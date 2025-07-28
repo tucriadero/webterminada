@@ -15,11 +15,8 @@ type Perfil = {
   provincia?: string | null
   afijo?: string | null
   nucleo_zoologico?: string | null
-<<<<<<< HEAD
-=======
   tipo_animal?: string | null
   raza_criada?: string | null
->>>>>>> 31097c8 (Añadido indicador 'está escribiendo' en chat)
   is_criadero?: boolean
   avatar_url?: string | null
 }
@@ -57,6 +54,7 @@ export default function MiPerfil() {
   }, [user, loading, router])
 
   if (loading) return <div className="p-10 text-center">Cargando perfil...</div>
+
   if (!perfil) {
     return (
       <div className="p-10 text-center text-red-500 font-semibold">
@@ -71,22 +69,20 @@ export default function MiPerfil() {
 
       <div className="bg-white rounded-3xl shadow-xl p-8 w-full max-w-md text-center space-y-4">
         <div className="relative flex justify-center">
-<Image
-  key={perfil?.avatar_url}
-  src={
-    perfil?.avatar_url
-      ? `https://cinsudwupbiqqizvqwij.supabase.co/storage/v1/object/public/avatars/${perfil.avatar_url}`
-      : '/default-avatar.png'
-  }
-  alt="Avatar"
-  width={100}
-  height={100}
-  unoptimized
-  priority
-  className="rounded-full object-cover border hover:opacity-80 transition"
-/>
-
-
+          <Image
+            key={perfil?.avatar_url}
+            src={
+              perfil?.avatar_url
+                ? `https://cinsudwupbiqqizvqwij.supabase.co/storage/v1/object/public/avatars/${perfil.avatar_url}`
+                : '/default-avatar.png'
+            }
+            alt="Avatar"
+            width={100}
+            height={100}
+            unoptimized
+            priority
+            className="rounded-full object-cover border hover:opacity-80 transition"
+          />
         </div>
 
         <h2 className="text-2xl font-bold text-[#5cae97]">@{perfil.username}</h2>
@@ -99,7 +95,6 @@ export default function MiPerfil() {
           </p>
         )}
 
-<<<<<<< HEAD
         {perfil.is_criadero && (
           <>
             <div className="inline-block bg-[#e1f7ef] text-[#3e947d] text-xs font-medium px-3 py-1 rounded-full">
@@ -111,36 +106,20 @@ export default function MiPerfil() {
             <p className="text-sm">
               📋 Núcleo zoológico: <strong>{perfil.nucleo_zoologico}</strong>
             </p>
+
+            {perfil.provincia && (
+              <p className="text-sm text-gray-700">
+                📍 Provincia: <strong>{perfil.provincia}</strong>
+              </p>
+            )}
+
+            {perfil.tipo_animal && perfil.raza_criada && (
+              <p className="text-sm text-gray-700">
+                🐶 Raza que cría: <strong>{perfil.raza_criada}</strong> ({perfil.tipo_animal})
+              </p>
+            )}
           </>
         )}
-=======
-      {perfil.is_criadero && (
-  <>
-    <div className="inline-block bg-[#e1f7ef] text-[#3e947d] text-xs font-medium px-3 py-1 rounded-full">
-      🏅 Criador verificado
-    </div>
-    <p className="text-sm mt-2">
-      🐾 Afijo: <strong>{perfil.afijo}</strong>
-    </p>
-    <p className="text-sm">
-      📋 Núcleo zoológico: <strong>{perfil.nucleo_zoologico}</strong>
-    </p>
-
-    {perfil.provincia && (
-      <p className="text-sm text-gray-700">
-        📍 Provincia: <strong>{perfil.provincia}</strong>
-      </p>
-    )}
-
-    {perfil.tipo_animal && perfil.raza_criada && (
-      <p className="text-sm text-gray-700">
-        🐶 Raza que cría: <strong>{perfil.raza_criada}</strong> ({perfil.tipo_animal})
-      </p>
-    )}
-  </>
-)}
-
->>>>>>> 31097c8 (Añadido indicador 'está escribiendo' en chat)
 
         <Link
           href="/editar-perfil"
