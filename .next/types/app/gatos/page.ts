@@ -1,4 +1,4 @@
-// File: C:\Users\Usuario\webterminada-main\app\gatos\page.tsx
+// File: C:\Users\samax\webterminada-main\app\gatos\page.tsx
 import * as entry from '../../../../app/gatos/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

@@ -1,4 +1,4 @@
-// File: C:\Users\Usuario\webterminada-main\app\mi-perfil\page.tsx
+// File: C:\Users\samax\webterminada-main\app\mi-perfil\page.tsx
 import * as entry from '../../../../app/mi-perfil/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

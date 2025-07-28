@@ -1,4 +1,4 @@
-// File: C:\Users\Usuario\webterminada-main\app\editar-anuncio\[id]\page.tsx
+// File: C:\Users\samax\webterminada-main\app\editar-anuncio\[id]\page.tsx
 import * as entry from '../../../../../app/editar-anuncio/[id]/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

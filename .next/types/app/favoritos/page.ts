@@ -1,4 +1,4 @@
-// File: C:\Users\Usuario\webterminada-main\app\favoritos\page.tsx
+// File: C:\Users\samax\webterminada-main\app\favoritos\page.tsx
 import * as entry from '../../../../app/favoritos/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
