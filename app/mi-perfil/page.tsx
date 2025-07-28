@@ -15,6 +15,11 @@ type Perfil = {
   provincia?: string | null
   afijo?: string | null
   nucleo_zoologico?: string | null
+<<<<<<< HEAD
+=======
+  tipo_animal?: string | null
+  raza_criada?: string | null
+>>>>>>> 31097c8 (Añadido indicador 'está escribiendo' en chat)
   is_criadero?: boolean
   avatar_url?: string | null
 }
@@ -94,6 +99,7 @@ export default function MiPerfil() {
           </p>
         )}
 
+<<<<<<< HEAD
         {perfil.is_criadero && (
           <>
             <div className="inline-block bg-[#e1f7ef] text-[#3e947d] text-xs font-medium px-3 py-1 rounded-full">
@@ -107,6 +113,34 @@ export default function MiPerfil() {
             </p>
           </>
         )}
+=======
+      {perfil.is_criadero && (
+  <>
+    <div className="inline-block bg-[#e1f7ef] text-[#3e947d] text-xs font-medium px-3 py-1 rounded-full">
+      🏅 Criador verificado
+    </div>
+    <p className="text-sm mt-2">
+      🐾 Afijo: <strong>{perfil.afijo}</strong>
+    </p>
+    <p className="text-sm">
+      📋 Núcleo zoológico: <strong>{perfil.nucleo_zoologico}</strong>
+    </p>
+
+    {perfil.provincia && (
+      <p className="text-sm text-gray-700">
+        📍 Provincia: <strong>{perfil.provincia}</strong>
+      </p>
+    )}
+
+    {perfil.tipo_animal && perfil.raza_criada && (
+      <p className="text-sm text-gray-700">
+        🐶 Raza que cría: <strong>{perfil.raza_criada}</strong> ({perfil.tipo_animal})
+      </p>
+    )}
+  </>
+)}
+
+>>>>>>> 31097c8 (Añadido indicador 'está escribiendo' en chat)
 
         <Link
           href="/editar-perfil"

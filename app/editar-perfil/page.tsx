@@ -18,6 +18,31 @@ const provincias: string[] = [
   'Sevilla', 'Soria', 'Tarragona', 'Teruel', 'Toledo', 'Valencia',
   'Valladolid', 'Vizcaya', 'Zamora', 'Zaragoza'
 ];
+<<<<<<< HEAD
+=======
+const razasPerro = [
+  'Affenpinscher', 'Akita Inu', 'Alaskan Malamute', 'American Bully', 'American Pit Bull Terrier', 'Basenji',
+  'Basset Hound', 'Beagle', 'Beauceron', 'Bedlington Terrier', 'Bichón Frisé', 'Bichón Maltés', 'Bobtail',
+  'Border Collie', 'Bóxer', 'Braco Alemán', 'Braco de Weimar', 'Bulldog Francés', 'Bulldog Inglés',
+  'Bullmastiff', 'Cairn Terrier', 'Cane Corso', 'Caniche', 'Carlino (Pug)', 'Cavalier King Charles Spaniel',
+  'Chihuahua', 'Chow Chow', 'Cocker Spaniel Americano', 'Cocker Spaniel Inglés', 'Collie', 'Dálmata',
+  'Dogo Alemán', 'Dogo Argentino', 'Dogo de Burdeos', 'Doberman', 'Epagneul Bretón', 'Fox Terrier',
+  'Galgo Español', 'Golden Retriever', 'Gran Danés', 'Greyhound', 'Husky Siberiano', 'Jack Russell Terrier',
+  'Keeshond', 'Labrador Retriever', 'Lhasa Apso', 'Mastín Español', 'Mastín Napolitano', 'Papillón',
+  'Pastor Alemán', 'Pastor Australiano', 'Pastor Belga', 'Pastor Blanco Suizo', 'Pequinés', 'Perro de Agua Español',
+  'Pinscher Miniatura', 'Pointer', 'Pomerania', 'Rottweiler', 'Salchicha (Teckel)', 'Samoyedo', 'San Bernardo',
+  'Scottish Terrier', 'Setter Irlandés', 'Shar Pei', 'Shiba Inu', 'Shih Tzu', 'Staffordshire Bull Terrier',
+  'Terranova', 'Vizsla', 'West Highland White Terrier', 'Whippet', 'Yorkshire Terrier'
+];
+const razasGato = [
+  'Abisinio', 'American Curl', 'Angora Turco', 'Azul Ruso', 'Balines', 'Bengalí', 'Bobtail Japonés',
+  'Bombay', 'Bosque de Noruega', 'Británico de Pelo Corto', 'Burmés', 'Cartujo (Chartreux)', 'Cornish Rex',
+  'Devon Rex', 'Egipcio (Mau Egipcio)', 'Europeo Común', 'Exótico de Pelo Corto', 'Fold Escocés', 'Himalayo',
+  'Korat', 'LaPerm', 'Maine Coon', 'Manx', 'Mau Egipcio', 'Munchkin', 'Nebelung', 'Ocicat', 'Oriental',
+  'Persa', 'Peterbald', 'Ragdoll', 'Savannah', 'Scottish Fold', 'Selkirk Rex', 'Siamés', 'Siberiano',
+  'Singapura', 'Snowshoe', 'Sphynx', 'Tonkinés', 'Toyger', 'Van Turco'
+];
+>>>>>>> 31097c8 (Añadido indicador 'está escribiendo' en chat)
 
 export default function EditarPerfil() {
   const user = useUser();
@@ -29,9 +54,17 @@ export default function EditarPerfil() {
   const [provincia, setProvincia] = useState('');
   const [afijo, setAfijo] = useState('');
   const [nucleo, setNucleo] = useState('');
+<<<<<<< HEAD
   const [isCriadero, setIsCriadero] = useState(false);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarPath, setAvatarPath] = useState<string | null>(null); // <- guardamos el path puro
+=======
+  const [tipoAnimal, setTipoAnimal] = useState('');
+  const [raza, setRaza] = useState('');
+  const [isCriadero, setIsCriadero] = useState(false);
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [avatarPath, setAvatarPath] = useState<string | null>(null);
+>>>>>>> 31097c8 (Añadido indicador 'está escribiendo' en chat)
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -56,6 +89,11 @@ export default function EditarPerfil() {
       setProvincia(data.provincia || '');
       setAfijo(data.afijo || '');
       setNucleo(data.nucleo_zoologico || '');
+<<<<<<< HEAD
+=======
+      setTipoAnimal(data.tipo_animal || '');
+      setRaza(data.raza_criada || '');
+>>>>>>> 31097c8 (Añadido indicador 'está escribiendo' en chat)
       setIsCriadero(data.is_criadero || false);
 
       if (data.avatar_url) {
@@ -108,6 +146,11 @@ export default function EditarPerfil() {
           provincia,
           afijo: isCriadero ? afijo : null,
           nucleo_zoologico: isCriadero ? nucleo : null,
+<<<<<<< HEAD
+=======
+          tipo_animal: isCriadero ? tipoAnimal : null,
+          raza_criada: isCriadero ? raza : null,
+>>>>>>> 31097c8 (Añadido indicador 'está escribiendo' en chat)
           is_criadero: isCriadero,
           avatar_url: finalAvatarPath || null,
         })
@@ -164,6 +207,36 @@ export default function EditarPerfil() {
           <>
             <input value={afijo} onChange={(e) => setAfijo(e.target.value)} placeholder="Afijo" className="w-full border px-4 py-2 rounded-lg" />
             <input value={nucleo} onChange={(e) => setNucleo(e.target.value)} placeholder="Núcleo zoológico" className="w-full border px-4 py-2 rounded-lg" />
+<<<<<<< HEAD
+=======
+
+            <select
+              value={tipoAnimal}
+              onChange={(e) => {
+                setTipoAnimal(e.target.value);
+                setRaza('');
+              }}
+              className="w-full border px-4 py-2 rounded-lg"
+            >
+              <option value="">Selecciona tipo</option>
+              <option value="perro">Perro</option>
+              <option value="gato">Gato</option>
+            </select>
+
+            {tipoAnimal && (
+              <select
+                value={raza}
+                onChange={(e) => setRaza(e.target.value)}
+                className="w-full border px-4 py-2 rounded-lg"
+              >
+                <option value="">Selecciona raza</option>
+             {(tipoAnimal === 'perro' ? razasPerro : razasGato).map((r) => (
+  <option key={r} value={r}>{r}</option>
+))}
+
+              </select>
+            )}
+>>>>>>> 31097c8 (Añadido indicador 'está escribiendo' en chat)
           </>
         )}
 

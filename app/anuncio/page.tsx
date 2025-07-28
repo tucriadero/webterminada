@@ -42,6 +42,7 @@ export default function PublicarAnuncioPage() {
 
   const razasDisponibles = tipo === 'perro' ? razasPerros : tipo === 'gato' ? razasGatos : [];
 
+<<<<<<< HEAD
   useEffect(() => {
     if (!user) return;
     const fetchPerfil = async () => {
@@ -55,6 +56,29 @@ export default function PublicarAnuncioPage() {
     };
     fetchPerfil();
   }, [user]);
+=======
+useEffect(() => {
+  if (!user) return;
+
+  const fetchPerfil = async () => {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('nombre, username, afijo, nucleo_zoologico, is_criadero')
+      .eq('id', user.id)
+      .single();
+
+    if (error) {
+      console.error('Error al obtener el perfil:', error);
+    }
+
+    setPerfil(data);
+    setLoading(false);
+  };
+
+  fetchPerfil();
+}, [user]);
+
+>>>>>>> 31097c8 (Añadido indicador 'está escribiendo' en chat)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

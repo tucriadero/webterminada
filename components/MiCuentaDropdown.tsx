@@ -17,6 +17,10 @@ export default function MiCuentaDropdown() {
   const user = useUser();
   const [open, setOpen] = useState(false);
   const [perfil, setPerfil] = useState<{ nombre: string | null; username: string | null } | null>(null);
+<<<<<<< HEAD
+=======
+  const [unreadCount, setUnreadCount] = useState(0);
+>>>>>>> 31097c8 (Añadido indicador 'está escribiendo' en chat)
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const handleLogout = async () => {
@@ -54,6 +58,20 @@ export default function MiCuentaDropdown() {
     fetchPerfil();
   }, [user]);
 
+<<<<<<< HEAD
+=======
+  useEffect(() => {
+    const fetchUnreadCount = async () => {
+      if (!user) return;
+      const { data, error } = await supabase.rpc('count_unread_messages', { user_id: user.id });
+      if (!error && typeof data === 'number') {
+        setUnreadCount(data);
+      }
+    };
+    fetchUnreadCount();
+  }, [user]);
+
+>>>>>>> 31097c8 (Añadido indicador 'está escribiendo' en chat)
   const mostrarNombre = perfil?.username || perfil?.nombre || user?.email || 'Usuario';
 
   return (
@@ -103,10 +121,22 @@ export default function MiCuentaDropdown() {
           </Link>
           <Link
             href="/chat"
+<<<<<<< HEAD
             className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 text-gray-700"
             onClick={() => setOpen(false)}
           >
             <ChatIcon className="h-5 w-5 text-[#5cae97]" /> Chat
+=======
+            className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 text-gray-700 relative"
+            onClick={() => setOpen(false)}
+          >
+            <ChatIcon className="h-5 w-5 text-[#5cae97]" /> Chat
+            {unreadCount > 0 && (
+              <span className="ml-auto bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                {unreadCount}
+              </span>
+            )}
+>>>>>>> 31097c8 (Añadido indicador 'está escribiendo' en chat)
           </Link>
           <button
             onClick={() => {
