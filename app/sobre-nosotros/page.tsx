@@ -1,0 +1,157 @@
+'use client';
+
+import Link from 'next/link';
+import Image from 'next/image';
+import { useState } from 'react';
+
+export default function SobreNosotros() {
+  const [enviado, setEnviado] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const form = e.currentTarget;
+    const data = new FormData(form);
+
+    const response = await fetch('https://formspree.io/f/mvgqpoel', {
+      method: 'POST',
+      body: data,
+      headers: { Accept: 'application/json' },
+    });
+
+    if (response.ok) {
+      setEnviado(true);
+      form.reset();
+    } else {
+      alert('Hubo un error al enviar tu sugerencia. Inténtalo de nuevo más tarde.');
+    }
+  };
+
+  return (
+    <main className="bg-[#E8F8F2] min-h-screen px-4 py-10">
+      <div className="max-w-4xl mx-auto space-y-10">
+
+        {/* 🐾 Logo pata arriba */}
+        <div className="flex justify-center mb-4">
+          <Image
+            src="/logo-criador.png"
+            alt="Logo TuCriadero"
+            width={80}
+            height={80}
+            priority
+            className="opacity-90"
+          />
+        </div>
+
+        <h1 className="text-4xl font-bold text-[#5cae97] text-center mb-6">
+          Sobre Nosotros
+        </h1>
+
+        <div className="bg-[#DFF6EA] border border-green-100 p-6 rounded-2xl shadow-md text-gray-700 text-lg leading-relaxed space-y-4">
+          <p>
+            <strong>TuCriadero.es</strong> es la primera plataforma en España especializada en la
+            cría responsable de perros y gatos. Está diseñada para conectar a familias responsables
+            con criadores verificados, garantizando la transparencia, el bienestar animal y la
+            seguridad en cada publicación.
+          </p>
+          <p>
+            No buscamos ser un portal masivo, sino una comunidad fiable y cuidada, donde todos los
+            criadores cumplen con los estándares legales y éticos exigidos, y donde cada familia
+            puede encontrar a su nuevo compañero con plena confianza.
+          </p>
+        </div>
+
+        <div className="space-y-5 text-gray-700 text-lg">
+          <p>
+            En <strong>TuCriadero.es</strong> creemos en la cría responsable y el respeto hacia los
+            animales. Nuestro objetivo es conectar a las personas con{' '}
+            <strong>criadores verificados</strong> de perros y gatos, facilitando un entorno
+            transparente, ético y seguro.
+          </p>
+
+          <p>
+            La plataforma ha sido creada por amantes de los animales con una visión clara: ofrecer
+            una alternativa profesional, moderna y confiable a los portales generalistas. Aquí,
+            cada criador debe cumplir con unos estándares mínimos, incluyendo número de núcleo
+            zoológico, cuidado de la salud de los animales y compromiso con su bienestar.
+          </p>
+
+          <p>
+            Además, apostamos por la tecnología para mejorar la experiencia: perfiles detallados,
+            contacto directo, filtros inteligentes por raza y ubicación, y próximamente, sistemas
+            de verificación avanzada y valoraciones reales.
+          </p>
+
+          <p>
+            Si eres criador, estás en el lugar adecuado para dar visibilidad a tu trabajo. Si estás
+            buscando un nuevo compañero de vida, aquí encontrarás información clara, actualizada y
+            criadores comprometidos.
+          </p>
+        </div>
+
+        <div className="mt-16 bg-[#DFF6EA] p-8 rounded-2xl shadow-md space-y-5">
+          <h2 className="text-2xl font-bold text-[#5cae97] text-center">
+            ¿Tienes una sugerencia?
+          </h2>
+
+          <div className="text-gray-700 text-lg leading-relaxed text-center">
+            <p className="mb-2 font-medium">
+              En TuCriadero valoramos las ideas y propuestas de criadores y usuarios. Si crees que
+              podemos mejorar la plataforma, nos encantará leerte.
+            </p>
+            <p className="mt-2 font-medium text-[#5cae97]">
+              Te responderemos en menos de 48h.
+            </p>
+          </div>
+
+          {!enviado ? (
+            <form onSubmit={handleSubmit} className="space-y-4 max-w-md mx-auto">
+              <input
+                type="text"
+                name="nombre"
+                placeholder="Tu nombre"
+                required
+                className="w-full border px-4 py-2 rounded-lg"
+              />
+              <input
+                type="email"
+                name="email"
+                placeholder="Tu correo"
+                required
+                className="w-full border px-4 py-2 rounded-lg"
+              />
+              <textarea
+                name="mensaje"
+                rows={4}
+                placeholder="Tu sugerencia"
+                required
+                className="w-full border px-4 py-2 rounded-lg"
+              />
+              <button
+                type="submit"
+                className="w-full bg-[#5cae97] hover:bg-[#4c9c85] text-white font-semibold py-2 px-4 rounded-lg transition"
+              >
+                Enviar sugerencia
+              </button>
+            </form>
+          ) : (
+            <div className="text-center text-[#5cae97] font-semibold mt-4">
+              🎉 ¡Gracias por tu sugerencia! <br /> Te responderemos en menos de 48h.
+            </div>
+          )}
+        </div>
+
+        {/* 🔙 Botón Volver al inicio */}
+        <div className="flex justify-center mt-12">
+          <Link
+            href="/inicio"
+            className="inline-flex items-center gap-2 bg-white text-[#5cae97] border border-[#5cae97]/20 px-6 py-2 rounded-full font-medium hover:bg-[#e9f8f3] transition"
+          >
+            <span className="text-lg">←</span>
+            Volver al inicio
+          </Link>
+        </div>
+      </div>
+    </main>
+  );
+}
